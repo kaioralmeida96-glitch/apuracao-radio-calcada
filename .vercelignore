@@ -1,3 +1,6 @@
 .claude
 .env*
 .gitignore
+wordpress
+dist
+README.md
