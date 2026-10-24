@@ -14,6 +14,7 @@ if (!defined('ABSPATH')) exit;
 
 define('RC_APURACAO_FILE', __DIR__ . '/app/index.html');
 define('RC_APURACAO_OPT', 'rc_apuracao_slug');
+define('RC_APURACAO_HOME', 'rc_apuracao_home');
 
 /* ---------- endereço próprio da apuração (ex.: seusite.com.br/apuracao/) ---------- */
 
@@ -41,8 +42,10 @@ add_filter('query_vars', function ($vars) {
 });
 
 // entrega a aplicação inteira, sem o tema do WordPress em volta
+// (no endereço próprio e, se marcado nas configurações, também na página inicial do site)
 add_action('template_redirect', function () {
-    if (!get_query_var('rc_apuracao')) return;
+    $home = get_option(RC_APURACAO_HOME) && is_front_page() && !is_paged();
+    if (!get_query_var('rc_apuracao') && !$home) return;
     if (!is_readable(RC_APURACAO_FILE)) {
         wp_die('Arquivo da apuração não encontrado no plugin. Reinstale o plugin Apuração 2026.');
     }
@@ -113,6 +116,11 @@ add_action('admin_init', function () {
         'sanitize_callback' => function ($v) { $v = sanitize_title($v); return $v ? $v : 'apuracao'; },
         'default' => 'apuracao',
     ));
+    register_setting('rc_apuracao', RC_APURACAO_HOME, array(
+        'type' => 'boolean',
+        'sanitize_callback' => function ($v) { return $v ? 1 : 0; },
+        'default' => 0,
+    ));
 });
 
 // trocar o endereço exige atualizar as regras de link
@@ -124,17 +132,33 @@ add_action('update_option_' . RC_APURACAO_OPT, function () {
 function rc_apuracao_admin_page() {
     if (!current_user_can('manage_options')) return;
     $url = rc_apuracao_url();
+    $is_home = (bool) get_option(RC_APURACAO_HOME);
     ?>
     <div class="wrap">
         <h1>Apuração 2026 · Rádio Calçada</h1>
 
         <h2>Página da apuração</h2>
-        <p>A apuração completa (2º turno, governadores, 1º turno e mapa) já está no ar neste endereço:</p>
-        <p><a class="button button-primary" href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener"><?php echo esc_html($url); ?></a></p>
+        <p>A apuração completa (2º turno, governadores, 1º turno e mapa) já está no ar <?php echo $is_home ? 'na página inicial do site e também' : ''; ?> neste endereço:</p>
+        <p>
+            <?php if ($is_home) : ?>
+                <a class="button button-primary" href="<?php echo esc_url(home_url('/')); ?>" target="_blank" rel="noopener"><?php echo esc_html(home_url('/')); ?></a>
+            <?php endif; ?>
+            <a class="button<?php echo $is_home ? '' : ' button-primary'; ?>" href="<?php echo esc_url($url); ?>" target="_blank" rel="noopener"><?php echo esc_html($url); ?></a>
+        </p>
 
         <form method="post" action="options.php">
             <?php settings_fields('rc_apuracao'); ?>
             <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">Página inicial</th>
+                    <td>
+                        <label>
+                            <input name="<?php echo esc_attr(RC_APURACAO_HOME); ?>" type="checkbox" value="1" <?php checked($is_home); ?>>
+                            Usar a apuração como página inicial do site (<code><?php echo esc_html(home_url('/')); ?></code>)
+                        </label>
+                        <p class="description">Quem abrir o endereço principal do site vai direto para a apuração. As outras páginas, os posts e o painel continuam iguais. Para voltar à página inicial de antes, é só desmarcar.</p>
+                    </td>
+                </tr>
                 <tr>
                     <th scope="row"><label for="rc_apuracao_slug">Endereço da página</label></th>
                     <td>
@@ -144,7 +168,7 @@ function rc_apuracao_admin_page() {
                     </td>
                 </tr>
             </table>
-            <?php submit_button('Salvar endereço'); ?>
+            <?php submit_button('Salvar configurações'); ?>
         </form>
 
         <h2>Colocar dentro de uma página ou post</h2>

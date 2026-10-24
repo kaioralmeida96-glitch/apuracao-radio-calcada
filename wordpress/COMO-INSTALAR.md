@@ -22,7 +22,17 @@ O link aparece em **Configurações → Apuração 2026**. Lá também dá para 
 
 Essa página ocupa a tela toda, com o visual da apuração, sem o cabeçalho do tema.
 
-## 3. Colocar a apuração dentro de uma página ou post (opcional)
+## 3. Usar a apuração como página inicial (opcional)
+
+Para que quem abrir `seusite.com.br` caia direto na apuração, sem precisar do `/apuracao/`:
+
+1. Vá em **Configurações → Apuração 2026**.
+2. Marque **Usar a apuração como página inicial do site**.
+3. Clique em **Salvar configurações**.
+
+Só a página inicial muda. As outras páginas, os posts, a busca e o painel continuam iguais, e `/apuracao/` também continua funcionando. Para voltar à página inicial de antes (por exemplo, depois da eleição), é só desmarcar e salvar.
+
+## 4. Colocar a apuração dentro de uma página ou post (opcional)
 
 Para mostrar a apuração dentro do layout do site, com cabeçalho, menu e rodapé do tema:
 

@@ -9,6 +9,7 @@ Apuração das Eleições 2026 com dados oficiais do TSE.
 == Descrição ==
 
 * Página própria: seusite.com.br/apuracao/ (o endereço pode ser trocado em Configurações → Apuração 2026)
+* Opção para usar a apuração como página inicial do site
 * Shortcode para qualquer página ou post: [apuracao_2026]
 * Abas: 2º turno ao vivo, Governadores, 1º turno e Mapa
 * Os dados são lidos direto do TSE pelo navegador de quem visita; o plugin não usa banco de dados nem chaves
