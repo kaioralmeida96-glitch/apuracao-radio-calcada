@@ -32,7 +32,26 @@ Para que quem abrir `seusite.com.br` caia direto na apuração, sem precisar do 
 
 Só a página inicial muda. As outras páginas, os posts, a busca e o painel continuam iguais, e `/apuracao/` também continua funcionando. Para voltar à página inicial de antes (por exemplo, depois da eleição), é só desmarcar e salvar.
 
-## 4. Colocar a apuração dentro de uma página ou post (opcional)
+## 4. Anúncios e QR code
+
+Em **Configurações → Apuração 2026**, nas partes **Anúncios** e **QR code**:
+
+| Espaço | Onde aparece | Banner computador | Banner celular |
+|---|---|---|---|
+| Topo | Abaixo do menu de abas | 970 × 90 | 320 × 100 |
+| Meio | Entre as seções da aba aberta | 970 × 250 | 300 × 250 |
+| Rodapé | Antes do rodapé | 970 × 90 | 320 × 100 |
+| QR code | Ao lado do anúncio do topo (no celular, abaixo dele) | quadrado, 300 × 300 | o mesmo |
+
+1. Em cada campo de imagem, clique em **Escolher imagem** e envie ou escolha o banner na biblioteca de mídia.
+2. Preencha o **link** para onde o anúncio leva ao clicar (opcional).
+3. Clique em **Salvar configurações**. O site passa a mostrar o anúncio na próxima vez que a página for aberta.
+
+- Mandou só uma imagem (só computador ou só celular)? Ela é usada nos dois.
+- Espaço sem imagem não aparece no site. Para tirar um anúncio, clique em **Remover** e salve.
+- Para ver onde ficam os espaços vazios, use o link **Ver onde ficam os espaços**, na mesma tela.
+
+## 5. Colocar a apuração dentro de uma página ou post (opcional)
 
 Para mostrar a apuração dentro do layout do site, com cabeçalho, menu e rodapé do tema:
 

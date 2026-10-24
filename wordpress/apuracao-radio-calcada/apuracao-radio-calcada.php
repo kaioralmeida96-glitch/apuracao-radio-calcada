@@ -15,6 +15,21 @@ if (!defined('ABSPATH')) exit;
 define('RC_APURACAO_FILE', __DIR__ . '/app/index.html');
 define('RC_APURACAO_OPT', 'rc_apuracao_slug');
 define('RC_APURACAO_HOME', 'rc_apuracao_home');
+define('RC_APURACAO_ADS', 'rc_apuracao_ads');
+
+// espaços de anúncio da página: nome no painel e tamanho recomendado (computador, celular)
+function rc_apuracao_ad_slots() {
+    return array(
+        'topo'   => array('Topo (abaixo do menu)', '970 × 90', '320 × 100'),
+        'meio'   => array('Meio (entre as seções)', '970 × 250', '300 × 250'),
+        'rodape' => array('Rodapé', '970 × 90', '320 × 100'),
+    );
+}
+
+function rc_apuracao_ads() {
+    $ads = get_option(RC_APURACAO_ADS, array());
+    return is_array($ads) ? $ads : array();
+}
 
 /* ---------- endereço próprio da apuração (ex.: seusite.com.br/apuracao/) ---------- */
 
@@ -59,6 +74,10 @@ add_action('template_redirect', function () {
         . "setInterval(send,700);})();</script>";
     $html = str_replace('</body>', $resize . "\n</body>", $html);
 
+    // anúncios e QR code configurados no painel
+    $ads = '<script>window.RC_ADS = ' . wp_json_encode(rc_apuracao_ads()) . ';</script>';
+    $html = str_replace('</head>', $ads . "\n</head>", $html);
+
     status_header(200);
     nocache_headers();
     header('Content-Type: text/html; charset=utf-8');
@@ -96,7 +115,7 @@ add_shortcode('apuracao_2026', function ($atts) {
     // endereço relativo: o iframe abre no mesmo domínio da página (www ou não, http ou https)
     $html .= '<iframe id="' . esc_attr($id) . '" src="' . esc_url(wp_make_link_relative(rc_apuracao_url($args, $aba))) . '"'
         . ' title="Apuração das Eleições 2026"'
-        . ' style="display:block;width:100%;border:0;min-height:600px;height:' . intval($a['altura']) . 'px;background:#0b0b0b;"></iframe>';
+        . ' style="display:block;width:100%;border:0;min-height:600px;height:' . intval($a['altura']) . 'px;background:#f2f6fb;"></iframe>';
     $html .= '</div>';
     $html .= '<script>(function(){var f=document.getElementById(' . wp_json_encode($id) . ');'
         . 'window.addEventListener("message",function(e){if(e.source===f.contentWindow&&e.data&&e.data.rcApuracaoHeight){'
@@ -121,7 +140,53 @@ add_action('admin_init', function () {
         'sanitize_callback' => function ($v) { return $v ? 1 : 0; },
         'default' => 0,
     ));
+    register_setting('rc_apuracao', RC_APURACAO_ADS, array(
+        'type' => 'array',
+        'sanitize_callback' => 'rc_apuracao_sanitize_ads',
+        'default' => array(),
+    ));
 });
+
+function rc_apuracao_sanitize_ads($v) {
+    $v = is_array($v) ? $v : array();
+    $out = array();
+    foreach (array_keys(rc_apuracao_ad_slots()) as $slot) {
+        $s = isset($v[$slot]) && is_array($v[$slot]) ? $v[$slot] : array();
+        $out[$slot] = array(
+            'desktop' => esc_url_raw(isset($s['desktop']) ? trim($s['desktop']) : ''),
+            'mobile'  => esc_url_raw(isset($s['mobile']) ? trim($s['mobile']) : ''),
+            'link'    => esc_url_raw(isset($s['link']) ? trim($s['link']) : ''),
+            'alt'     => sanitize_text_field(isset($s['alt']) ? $s['alt'] : ''),
+        );
+    }
+    $q = isset($v['qr']) && is_array($v['qr']) ? $v['qr'] : array();
+    $out['qr'] = array(
+        'imagem' => esc_url_raw(isset($q['imagem']) ? trim($q['imagem']) : ''),
+        'titulo' => sanitize_text_field(isset($q['titulo']) ? $q['titulo'] : ''),
+        'texto'  => sanitize_text_field(isset($q['texto']) ? $q['texto'] : ''),
+        'link'   => esc_url_raw(isset($q['link']) ? trim($q['link']) : ''),
+    );
+    return $out;
+}
+
+// biblioteca de mídia do WordPress para o botão "Escolher imagem"
+add_action('admin_enqueue_scripts', function ($hook) {
+    if ($hook !== 'settings_page_rc-apuracao') return;
+    wp_enqueue_media();
+});
+
+// campo de imagem: endereço + botão que abre a biblioteca de mídia + miniatura
+function rc_apuracao_image_field($name, $value, $hint) {
+    ?>
+    <div class="rc-img">
+        <input type="url" class="regular-text rc-img-url" name="<?php echo esc_attr($name); ?>" value="<?php echo esc_attr($value); ?>" placeholder="https://…">
+        <button type="button" class="button rc-img-pick">Escolher imagem</button>
+        <button type="button" class="button-link rc-img-clear" style="color:#b32d2e;margin-left:6px">Remover</button>
+        <p class="description"><?php echo esc_html($hint); ?></p>
+        <img class="rc-img-prev" src="<?php echo esc_url($value); ?>" alt="" style="max-width:320px;max-height:120px;margin-top:6px;display:<?php echo $value ? 'block' : 'none'; ?>;border:1px solid #dcdcde">
+    </div>
+    <?php
+}
 
 // trocar o endereço exige atualizar as regras de link
 add_action('update_option_' . RC_APURACAO_OPT, function () {
@@ -168,8 +233,58 @@ function rc_apuracao_admin_page() {
                     </td>
                 </tr>
             </table>
+
+            <?php $ads = rc_apuracao_ads(); $an = RC_APURACAO_ADS; ?>
+            <h2>Anúncios</h2>
+            <p>Cada espaço tem uma imagem para computador e outra para celular. Se mandar só uma, ela é usada nos dois. Espaço sem imagem não aparece no site.
+               <a href="<?php echo esc_url(rc_apuracao_url(array('anuncios' => 'exemplo'))); ?>" target="_blank" rel="noopener">Ver onde ficam os espaços</a></p>
+            <?php foreach (rc_apuracao_ad_slots() as $slot => $info) :
+                $s = isset($ads[$slot]) ? $ads[$slot] : array();
+                $g = function ($k) use ($s) { return isset($s[$k]) ? $s[$k] : ''; }; ?>
+                <h3 style="margin-bottom:0"><?php echo esc_html($info[0]); ?></h3>
+                <table class="form-table" role="presentation">
+                    <tr><th scope="row">Banner computador</th><td><?php rc_apuracao_image_field("{$an}[{$slot}][desktop]", $g('desktop'), 'Tamanho recomendado: ' . $info[1] . ' px'); ?></td></tr>
+                    <tr><th scope="row">Banner celular</th><td><?php rc_apuracao_image_field("{$an}[{$slot}][mobile]", $g('mobile'), 'Tamanho recomendado: ' . $info[2] . ' px'); ?></td></tr>
+                    <tr><th scope="row">Link ao clicar</th><td><input type="url" class="regular-text" name="<?php echo esc_attr("{$an}[{$slot}][link]"); ?>" value="<?php echo esc_attr($g('link')); ?>" placeholder="https://site-do-anunciante.com.br"></td></tr>
+                    <tr><th scope="row">Nome do anunciante</th><td><input type="text" class="regular-text" name="<?php echo esc_attr("{$an}[{$slot}][alt]"); ?>" value="<?php echo esc_attr($g('alt')); ?>"><p class="description">Texto alternativo da imagem (acessibilidade).</p></td></tr>
+                </table>
+            <?php endforeach; ?>
+
+            <?php $q = isset($ads['qr']) ? $ads['qr'] : array(); $gq = function ($k) use ($q) { return isset($q[$k]) ? $q[$k] : ''; }; ?>
+            <h2>QR code</h2>
+            <p>Quadrado ao lado do anúncio do topo (no celular, logo abaixo dele).</p>
+            <table class="form-table" role="presentation">
+                <tr><th scope="row">Imagem do QR code</th><td><?php rc_apuracao_image_field("{$an}[qr][imagem]", $gq('imagem'), 'Imagem quadrada, de preferência 300 × 300 px'); ?></td></tr>
+                <tr><th scope="row">Título</th><td><input type="text" class="regular-text" name="<?php echo esc_attr("{$an}[qr][titulo]"); ?>" value="<?php echo esc_attr($gq('titulo')); ?>" placeholder="Aponte a câmera"></td></tr>
+                <tr><th scope="row">Texto</th><td><input type="text" class="large-text" name="<?php echo esc_attr("{$an}[qr][texto]"); ?>" value="<?php echo esc_attr($gq('texto')); ?>" placeholder="Ex.: Ouça a Rádio Calçada ao vivo"></td></tr>
+                <tr><th scope="row">Link ao clicar</th><td><input type="url" class="regular-text" name="<?php echo esc_attr("{$an}[qr][link]"); ?>" value="<?php echo esc_attr($gq('link')); ?>" placeholder="https://"><p class="description">Opcional: quem estiver no celular pode tocar no QR code em vez de escanear.</p></td></tr>
+            </table>
+
             <?php submit_button('Salvar configurações'); ?>
         </form>
+
+        <script>
+        // botão "Escolher imagem": abre a biblioteca de mídia e preenche o endereço
+        (function ($) {
+            $(document).on('click', '.rc-img-pick', function (e) {
+                e.preventDefault();
+                var box = $(this).closest('.rc-img');
+                var frame = wp.media({ title: 'Escolher imagem', button: { text: 'Usar esta imagem' }, library: { type: 'image' }, multiple: false });
+                frame.on('select', function () {
+                    var url = frame.state().get('selection').first().toJSON().url;
+                    box.find('.rc-img-url').val(url);
+                    box.find('.rc-img-prev').attr('src', url).show();
+                });
+                frame.open();
+            });
+            $(document).on('click', '.rc-img-clear', function (e) {
+                e.preventDefault();
+                var box = $(this).closest('.rc-img');
+                box.find('.rc-img-url').val('');
+                box.find('.rc-img-prev').attr('src', '').hide();
+            });
+        })(jQuery);
+        </script>
 
         <h2>Colocar dentro de uma página ou post</h2>
         <p>Cole um destes códigos em qualquer página, post ou bloco "Shortcode" do editor:</p>

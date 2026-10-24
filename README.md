@@ -15,6 +15,12 @@ No ar em https://apuracao-radio-calcada.vercel.app
 - `?uf=sp` abre o 2º turno já em um estado
 - `?intervalo=20` muda o tempo de atualização (mínimo 15 segundos)
 
+## Anúncios e QR code
+
+- No WordPress: **Configurações → Apuração 2026** (veja `wordpress/COMO-INSTALAR.md`)
+- Na Vercel: edite `ads.json` com os endereços das imagens (`desktop`, `mobile`, `link`) de cada espaço (`topo`, `meio`, `rodape`) e do `qr`
+- `?anuncios=exemplo` mostra onde ficam os espaços vazios
+
 ## Rodar no computador
 
 ```bash
