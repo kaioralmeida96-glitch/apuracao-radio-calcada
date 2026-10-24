@@ -1,6 +1,13 @@
 {
-  "topo":   { "desktop": "", "mobile": "", "link": "", "alt": "" },
-  "meio":   { "desktop": "", "mobile": "", "link": "", "alt": "" },
-  "rodape": { "desktop": "", "mobile": "", "link": "", "alt": "" },
-  "qr":     { "imagem": "", "titulo": "", "texto": "", "link": "" }
+  "intervalo": 6,
+  "topo": [
+    { "desktop": "", "mobile": "", "link": "", "alt": "" }
+  ],
+  "meio": [
+    { "desktop": "", "mobile": "", "link": "", "alt": "" }
+  ],
+  "rodape": [
+    { "desktop": "", "mobile": "", "link": "", "alt": "" }
+  ],
+  "qr": { "imagem": "", "titulo": "", "texto": "", "link": "" }
 }

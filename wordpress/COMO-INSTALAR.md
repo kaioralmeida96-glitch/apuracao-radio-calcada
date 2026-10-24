@@ -2,15 +2,17 @@
 
 A aplicação completa vai como um **plugin**. Não é preciso colar HTML nem mexer no tema.
 
-Arquivo para instalar: `dist/apuracao-radio-calcada.zip`
+Arquivo para instalar: `dist/apuracao-eleicoes.zip`
 
 ## 1. Instalar o plugin
 
 1. Entre no painel do WordPress (`seusite.com.br/wp-admin`).
 2. Vá em **Plugins → Adicionar novo plugin**.
 3. Clique em **Enviar plugin**, no topo da tela.
-4. Clique em **Escolher arquivo**, selecione `apuracao-radio-calcada.zip` e clique em **Instalar agora**.
+4. Clique em **Escolher arquivo**, selecione `apuracao-eleicoes.zip` e clique em **Instalar agora**.
 5. Clique em **Ativar plugin**.
+
+**Já tinha a versão antiga ("Apuração 2026 · Rádio Calçada")?** Em **Plugins**, primeiro **desative** e **exclua** a antiga, depois instale esta. As configurações (endereço, página inicial, anúncios e QR code) continuam salvas e são aproveitadas pela versão nova.
 
 ## 2. A página da apuração já está no ar
 
@@ -32,9 +34,9 @@ Para que quem abrir `seusite.com.br` caia direto na apuração, sem precisar do 
 
 Só a página inicial muda. As outras páginas, os posts, a busca e o painel continuam iguais, e `/apuracao/` também continua funcionando. Para voltar à página inicial de antes (por exemplo, depois da eleição), é só desmarcar e salvar.
 
-## 4. Anúncios e QR code
+## 4. Anúncios (carrossel) e QR code
 
-Em **Configurações → Apuração 2026**, nas partes **Anúncios** e **QR code**:
+Em **Configurações → Apuração 2026**, nas partes **Anúncios (carrossel)** e **QR code**. Cada espaço pode ter **vários banners**, que se revezam sozinhos. O tempo de troca é ajustável em **Trocar banner a cada … segundos** (padrão: 6).
 
 | Espaço | Onde aparece | Banner computador | Banner celular |
 |---|---|---|---|
@@ -43,12 +45,15 @@ Em **Configurações → Apuração 2026**, nas partes **Anúncios** e **QR code
 | Rodapé | Antes do rodapé | 970 × 90 | 320 × 100 |
 | QR code | Ao lado do anúncio do topo (no celular, abaixo dele) | quadrado, 300 × 300 | o mesmo |
 
-1. Em cada campo de imagem, clique em **Escolher imagem** e envie ou escolha o banner na biblioteca de mídia.
+1. Em cada banner, clique em **Escolher imagem** e envie ou escolha a imagem na biblioteca de mídia (uma para computador e outra para celular).
 2. Preencha o **link** para onde o anúncio leva ao clicar (opcional).
-3. Clique em **Salvar configurações**. O site passa a mostrar o anúncio na próxima vez que a página for aberta.
+3. Para mais anunciantes no mesmo espaço, clique em **+ Adicionar banner neste espaço**.
+4. Clique em **Salvar configurações**. O site passa a mostrar os anúncios na próxima vez que a página for aberta.
 
 - Mandou só uma imagem (só computador ou só celular)? Ela é usada nos dois.
-- Espaço sem imagem não aparece no site. Para tirar um anúncio, clique em **Remover** e salve.
+- Com 2 ou mais banners, aparecem bolinhas embaixo para escolher, e a troca pausa com o mouse em cima.
+- Use banners do mesmo tamanho em cada espaço, para a página não "pular" na troca.
+- Espaço sem banner não aparece no site. Para tirar um anúncio, clique em **Remover este banner** e salve.
 - Para ver onde ficam os espaços vazios, use o link **Ver onde ficam os espaços**, na mesma tela.
 
 ## 5. Colocar a apuração dentro de uma página ou post (opcional)

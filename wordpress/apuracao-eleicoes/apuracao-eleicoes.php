@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name:       Apuração 2026 · Rádio Calçada
+ * Plugin Name:       Apuração Eleições 2026
  * Description:       Apuração das Eleições 2026 com dados oficiais do TSE: 2º turno ao vivo, governadores, 1º turno e mapa. Página própria em /apuracao/ e shortcode [apuracao_2026] para usar em qualquer página ou post.
  * Version:           1.0.0
  * Requires at least: 5.0
  * Requires PHP:      7.0
- * Author:            Rádio Calçada
+ * Author:            Apuração Eleições 2026
  * License:           GPL-2.0-or-later
- * Text Domain:       apuracao-radio-calcada
+ * Text Domain:       apuracao-eleicoes
  */
 
 if (!defined('ABSPATH')) exit;
@@ -147,17 +147,30 @@ add_action('admin_init', function () {
     ));
 });
 
+// banners de um espaço (lista do carrossel); aceita o formato antigo, com um banner só
+function rc_apuracao_ad_items($ads, $slot) {
+    $v = isset($ads[$slot]) && is_array($ads[$slot]) ? $ads[$slot] : array();
+    if (isset($v['desktop']) || isset($v['mobile'])) $v = array($v);
+    return array_values(array_filter($v, 'is_array'));
+}
+
 function rc_apuracao_sanitize_ads($v) {
     $v = is_array($v) ? $v : array();
     $out = array();
+    $s = isset($v['intervalo']) ? intval($v['intervalo']) : 6;
+    $out['intervalo'] = ($s >= 2 && $s <= 60) ? $s : 6;
     foreach (array_keys(rc_apuracao_ad_slots()) as $slot) {
-        $s = isset($v[$slot]) && is_array($v[$slot]) ? $v[$slot] : array();
-        $out[$slot] = array(
-            'desktop' => esc_url_raw(isset($s['desktop']) ? trim($s['desktop']) : ''),
-            'mobile'  => esc_url_raw(isset($s['mobile']) ? trim($s['mobile']) : ''),
-            'link'    => esc_url_raw(isset($s['link']) ? trim($s['link']) : ''),
-            'alt'     => sanitize_text_field(isset($s['alt']) ? $s['alt'] : ''),
-        );
+        $out[$slot] = array();
+        foreach (rc_apuracao_ad_items($v, $slot) as $it) {
+            $item = array(
+                'desktop' => esc_url_raw(isset($it['desktop']) ? trim($it['desktop']) : ''),
+                'mobile'  => esc_url_raw(isset($it['mobile']) ? trim($it['mobile']) : ''),
+                'link'    => esc_url_raw(isset($it['link']) ? trim($it['link']) : ''),
+                'alt'     => sanitize_text_field(isset($it['alt']) ? $it['alt'] : ''),
+            );
+            // banner sem nenhuma imagem é descartado
+            if ($item['desktop'] !== '' || $item['mobile'] !== '') $out[$slot][] = $item;
+        }
     }
     $q = isset($v['qr']) && is_array($v['qr']) ? $v['qr'] : array();
     $out['qr'] = array(
@@ -188,6 +201,26 @@ function rc_apuracao_image_field($name, $value, $hint) {
     <?php
 }
 
+// um banner do carrossel: imagem de computador, de celular, link e nome do anunciante
+function rc_apuracao_ad_card($slot, $i, $item, $info) {
+    $n = RC_APURACAO_ADS . "[{$slot}][{$i}]";
+    $g = function ($k) use ($item) { return isset($item[$k]) ? $item[$k] : ''; };
+    ?>
+    <div class="rc-card" style="background:#fff;border:1px solid #dcdcde;border-radius:4px;padding:4px 14px 10px;margin:10px 0;max-width:900px">
+        <p style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 0">
+            <strong class="rc-card-title">Banner</strong>
+            <button type="button" class="button-link rc-card-del" style="color:#b32d2e">Remover este banner</button>
+        </p>
+        <table class="form-table" role="presentation" style="margin-top:0">
+            <tr><th scope="row">Banner computador</th><td><?php rc_apuracao_image_field("{$n}[desktop]", $g('desktop'), 'Tamanho recomendado: ' . $info[1] . ' px'); ?></td></tr>
+            <tr><th scope="row">Banner celular</th><td><?php rc_apuracao_image_field("{$n}[mobile]", $g('mobile'), 'Tamanho recomendado: ' . $info[2] . ' px'); ?></td></tr>
+            <tr><th scope="row">Link ao clicar</th><td><input type="url" class="regular-text" name="<?php echo esc_attr("{$n}[link]"); ?>" value="<?php echo esc_attr($g('link')); ?>" placeholder="https://site-do-anunciante.com.br"></td></tr>
+            <tr><th scope="row">Nome do anunciante</th><td><input type="text" class="regular-text" name="<?php echo esc_attr("{$n}[alt]"); ?>" value="<?php echo esc_attr($g('alt')); ?>"><p class="description">Texto alternativo da imagem (acessibilidade).</p></td></tr>
+        </table>
+    </div>
+    <?php
+}
+
 // trocar o endereço exige atualizar as regras de link
 add_action('update_option_' . RC_APURACAO_OPT, function () {
     add_rewrite_rule('^' . preg_quote(rc_apuracao_slug(), '#') . '/?$', 'index.php?rc_apuracao=1', 'top');
@@ -200,7 +233,7 @@ function rc_apuracao_admin_page() {
     $is_home = (bool) get_option(RC_APURACAO_HOME);
     ?>
     <div class="wrap">
-        <h1>Apuração 2026 · Rádio Calçada</h1>
+        <h1>Apuração Eleições 2026</h1>
 
         <h2>Página da apuração</h2>
         <p>A apuração completa (2º turno, governadores, 1º turno e mapa) já está no ar <?php echo $is_home ? 'na página inicial do site e também' : ''; ?> neste endereço:</p>
@@ -235,19 +268,24 @@ function rc_apuracao_admin_page() {
             </table>
 
             <?php $ads = rc_apuracao_ads(); $an = RC_APURACAO_ADS; ?>
-            <h2>Anúncios</h2>
-            <p>Cada espaço tem uma imagem para computador e outra para celular. Se mandar só uma, ela é usada nos dois. Espaço sem imagem não aparece no site.
+            <h2>Anúncios (carrossel)</h2>
+            <p>Cada espaço pode ter vários banners, que se revezam sozinhos em carrossel. Cada banner tem uma imagem para computador e outra para celular; se mandar só uma, ela é usada nos dois. Espaço sem banner não aparece no site.
                <a href="<?php echo esc_url(rc_apuracao_url(array('anuncios' => 'exemplo'))); ?>" target="_blank" rel="noopener">Ver onde ficam os espaços</a></p>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row"><label for="rc_ad_int">Trocar banner a cada</label></th>
+                    <td><input id="rc_ad_int" type="number" min="2" max="60" class="small-text" name="<?php echo esc_attr("{$an}[intervalo]"); ?>" value="<?php echo esc_attr(isset($ads['intervalo']) ? $ads['intervalo'] : 6); ?>"> segundos</td>
+                </tr>
+            </table>
             <?php foreach (rc_apuracao_ad_slots() as $slot => $info) :
-                $s = isset($ads[$slot]) ? $ads[$slot] : array();
-                $g = function ($k) use ($s) { return isset($s[$k]) ? $s[$k] : ''; }; ?>
+                $items = rc_apuracao_ad_items($ads, $slot);
+                if (!$items) $items = array(array()); ?>
                 <h3 style="margin-bottom:0"><?php echo esc_html($info[0]); ?></h3>
-                <table class="form-table" role="presentation">
-                    <tr><th scope="row">Banner computador</th><td><?php rc_apuracao_image_field("{$an}[{$slot}][desktop]", $g('desktop'), 'Tamanho recomendado: ' . $info[1] . ' px'); ?></td></tr>
-                    <tr><th scope="row">Banner celular</th><td><?php rc_apuracao_image_field("{$an}[{$slot}][mobile]", $g('mobile'), 'Tamanho recomendado: ' . $info[2] . ' px'); ?></td></tr>
-                    <tr><th scope="row">Link ao clicar</th><td><input type="url" class="regular-text" name="<?php echo esc_attr("{$an}[{$slot}][link]"); ?>" value="<?php echo esc_attr($g('link')); ?>" placeholder="https://site-do-anunciante.com.br"></td></tr>
-                    <tr><th scope="row">Nome do anunciante</th><td><input type="text" class="regular-text" name="<?php echo esc_attr("{$an}[{$slot}][alt]"); ?>" value="<?php echo esc_attr($g('alt')); ?>"><p class="description">Texto alternativo da imagem (acessibilidade).</p></td></tr>
-                </table>
+                <div class="rc-list" data-slot="<?php echo esc_attr($slot); ?>">
+                    <?php foreach ($items as $i => $item) rc_apuracao_ad_card($slot, $i, $item, $info); ?>
+                </div>
+                <script type="text/template" class="rc-tpl" data-slot="<?php echo esc_attr($slot); ?>"><?php rc_apuracao_ad_card($slot, '__i__', array(), $info); ?></script>
+                <p><button type="button" class="button rc-add" data-slot="<?php echo esc_attr($slot); ?>">+ Adicionar banner neste espaço</button></p>
             <?php endforeach; ?>
 
             <?php $q = isset($ads['qr']) ? $ads['qr'] : array(); $gq = function ($k) use ($q) { return isset($q[$k]) ? $q[$k] : ''; }; ?>
@@ -256,7 +294,7 @@ function rc_apuracao_admin_page() {
             <table class="form-table" role="presentation">
                 <tr><th scope="row">Imagem do QR code</th><td><?php rc_apuracao_image_field("{$an}[qr][imagem]", $gq('imagem'), 'Imagem quadrada, de preferência 300 × 300 px'); ?></td></tr>
                 <tr><th scope="row">Título</th><td><input type="text" class="regular-text" name="<?php echo esc_attr("{$an}[qr][titulo]"); ?>" value="<?php echo esc_attr($gq('titulo')); ?>" placeholder="Aponte a câmera"></td></tr>
-                <tr><th scope="row">Texto</th><td><input type="text" class="large-text" name="<?php echo esc_attr("{$an}[qr][texto]"); ?>" value="<?php echo esc_attr($gq('texto')); ?>" placeholder="Ex.: Ouça a Rádio Calçada ao vivo"></td></tr>
+                <tr><th scope="row">Texto</th><td><input type="text" class="large-text" name="<?php echo esc_attr("{$an}[qr][texto]"); ?>" value="<?php echo esc_attr($gq('texto')); ?>" placeholder="Ex.: Acompanhe ao vivo no nosso site"></td></tr>
                 <tr><th scope="row">Link ao clicar</th><td><input type="url" class="regular-text" name="<?php echo esc_attr("{$an}[qr][link]"); ?>" value="<?php echo esc_attr($gq('link')); ?>" placeholder="https://"><p class="description">Opcional: quem estiver no celular pode tocar no QR code em vez de escanear.</p></td></tr>
             </table>
 
@@ -276,6 +314,25 @@ function rc_apuracao_admin_page() {
                     box.find('.rc-img-prev').attr('src', url).show();
                 });
                 frame.open();
+            });
+            // carrossel: numera os banners, adiciona um novo a partir do modelo e remove
+            function numerar() {
+                $('.rc-list').each(function () {
+                    $(this).find('.rc-card-title').each(function (k) { $(this).text('Banner ' + (k + 1)); });
+                });
+            }
+            numerar();
+            $(document).on('click', '.rc-add', function (e) {
+                e.preventDefault();
+                var slot = $(this).data('slot');
+                var html = $('.rc-tpl[data-slot="' + slot + '"]').html().replace(/__i__/g, 'n' + Date.now());
+                $('.rc-list[data-slot="' + slot + '"]').append(html);
+                numerar();
+            });
+            $(document).on('click', '.rc-card-del', function (e) {
+                e.preventDefault();
+                $(this).closest('.rc-card').remove();
+                numerar();
             });
             $(document).on('click', '.rc-img-clear', function (e) {
                 e.preventDefault();

@@ -1,4 +1,4 @@
-=== Apuração 2026 · Rádio Calçada ===
+=== Apuração Eleições 2026 ===
 Requires at least: 5.0
 Requires PHP: 7.0
 Stable tag: 1.0.0

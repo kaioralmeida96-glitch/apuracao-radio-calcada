@@ -1,4 +1,4 @@
-# Apuração 2026 · Rádio Calçada
+# Apuração Eleições 2026
 
 Página única (`index.html`) com a apuração das Eleições 2026, lendo direto os arquivos públicos do TSE.
 
@@ -7,7 +7,7 @@ Página única (`index.html`) com a apuração das Eleições 2026, lendo direto
 - **1º turno**: resultado final de presidente (todos os candidatos) e dos 27 governadores
 - **Mapa**: quem venceu em cada estado no 1º ou no 2º turno, com resumo do estado ao clicar
 
-No ar em https://apuracao-radio-calcada.vercel.app
+No ar em https://apuracao-eleicoes-2026-chi.vercel.app
 
 ## Endereço com opções
 
@@ -18,7 +18,7 @@ No ar em https://apuracao-radio-calcada.vercel.app
 ## Anúncios e QR code
 
 - No WordPress: **Configurações → Apuração 2026** (veja `wordpress/COMO-INSTALAR.md`)
-- Na Vercel: edite `ads.json` com os endereços das imagens (`desktop`, `mobile`, `link`) de cada espaço (`topo`, `meio`, `rodape`) e do `qr`
+- Na Vercel: edite `ads.json`. Cada espaço (`topo`, `meio`, `rodape`) é uma lista de banners (`desktop`, `mobile`, `link`), que giram em carrossel a cada `intervalo` segundos. O `qr` tem `imagem`, `titulo`, `texto` e `link`
 - `?anuncios=exemplo` mostra onde ficam os espaços vazios
 
 ## Rodar no computador

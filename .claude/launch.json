@@ -6,6 +6,13 @@
       "runtimeExecutable": "node",
       "runtimeArgs": [".claude/serve.js"],
       "port": 8080
+    },
+    {
+      "name": "wordpress-teste",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--yes", "@wp-playground/cli@latest", "server", "--port=9400", "--mount-dir", "C:/Users/kaio_/AppData/Local/Temp/claude/D--site-mikael/53e494cf-dc31-4d79-9a7e-cf7a18a04b4c/scratchpad/wp/plugins/apuracao-eleicoes", "/wordpress/wp-content/plugins/apuracao-eleicoes", "--blueprint=C:/Users/kaio_/AppData/Local/Temp/claude/D--site-mikael/53e494cf-dc31-4d79-9a7e-cf7a18a04b4c/scratchpad/wp/blueprint.json", "--login"],
+      "port": 9400,
+      "autoPort": false
     }
   ]
 }
