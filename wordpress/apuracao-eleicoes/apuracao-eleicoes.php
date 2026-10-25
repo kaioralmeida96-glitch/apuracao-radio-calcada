@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Apuração Eleições 2026
  * Description:       Apuração das Eleições 2026 com dados oficiais do TSE: 2º turno ao vivo, governadores, 1º turno e mapa. Página própria em /apuracao/ e shortcode [apuracao_2026] para usar em qualquer página ou post.
- * Version:           1.2.0
+ * Version:           1.2.1
  * Requires at least: 5.0
  * Requires PHP:      7.0
  * Author:            Apuração Eleições 2026
@@ -320,7 +320,7 @@ function rc_apuracao_admin_page() {
 
             <?php $qrs = rc_apuracao_qr_items($ads); ?>
             <h2>QR codes</h2>
-            <p>Até 2 quadradinhos ao lado do anúncio do topo (no celular, logo abaixo dele). QR code sem imagem não aparece.</p>
+            <p>Até 2 quadradinhos ao lado do anúncio do topo, com a mesma altura do banner (no celular, logo abaixo dele). Aparece só a imagem do QR code, sem texto. QR code sem imagem não aparece.</p>
             <?php for ($k = 0; $k < 2; $k++) :
                 $q = isset($qrs[$k]) ? $qrs[$k] : array();
                 $gq = function ($f) use ($q) { return isset($q[$f]) ? $q[$f] : ''; };
@@ -328,8 +328,7 @@ function rc_apuracao_admin_page() {
                 <h3 style="margin-bottom:0">QR code <?php echo $k + 1; ?></h3>
                 <table class="form-table" role="presentation">
                     <tr><th scope="row">Imagem do QR code</th><td><?php rc_apuracao_image_field("{$qn}[imagem]", $gq('imagem'), 'Imagem quadrada, de preferência 300 × 300 px'); ?></td></tr>
-                    <tr><th scope="row">Título</th><td><input type="text" class="regular-text" name="<?php echo esc_attr("{$qn}[titulo]"); ?>" value="<?php echo esc_attr($gq('titulo')); ?>" placeholder="Aponte a câmera"></td></tr>
-                    <tr><th scope="row">Texto</th><td><input type="text" class="large-text" name="<?php echo esc_attr("{$qn}[texto]"); ?>" value="<?php echo esc_attr($gq('texto')); ?>" placeholder="Ex.: Acompanhe ao vivo no nosso site"></td></tr>
+                    <tr><th scope="row">Descrição</th><td><input type="text" class="regular-text" name="<?php echo esc_attr("{$qn}[titulo]"); ?>" value="<?php echo esc_attr($gq('titulo')); ?>" placeholder="Ex.: QR code do anunciante"><p class="description">Não aparece na página; é lida por leitores de tela e mostrada ao passar o mouse.</p></td></tr>
                     <tr><th scope="row">Link ao clicar</th><td><input type="url" class="regular-text" name="<?php echo esc_attr("{$qn}[link]"); ?>" value="<?php echo esc_attr($gq('link')); ?>" placeholder="https://"><p class="description">Opcional: quem estiver no celular pode tocar no QR code em vez de escanear.</p></td></tr>
                 </table>
             <?php endfor; ?>

@@ -56,7 +56,7 @@ Em **Configurações → Apuração 2026**, nas partes **Anúncios (carrossel)**
 - **Espaço sem banner** mostra uma caixa **"Anuncie aqui"**. O texto (ex.: seu telefone) e o link (ex.: WhatsApp `https://wa.me/55…`) são definidos no painel. Para os espaços vazios sumirem, desmarque **Mostrar a caixa "Anuncie aqui"**.
 - Para tirar um anúncio, clique em **Remover este banner** e salve.
 - **Links:** cada banner e cada QR code tem o campo **Link ao clicar**. Preenchido, o anúncio ou o QR code vira clicável e abre o link em outra aba.
-- **QR codes:** preencha **QR code 1** e, se quiser, **QR code 2** (imagem, título, texto e link). QR code sem imagem não aparece.
+- **QR codes:** preencha **QR code 1** e, se quiser, **QR code 2** (imagem e link). Na página aparece só o quadradinho do QR, sem texto, com a mesma altura do banner ao lado. QR code sem imagem não aparece.
 - Para ver onde ficam os espaços vazios, use o link **Ver onde ficam os espaços**, na mesma tela.
 
 ## 5. Colocar a apuração dentro de uma página ou post (opcional)
