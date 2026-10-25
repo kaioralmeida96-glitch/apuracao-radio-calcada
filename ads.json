@@ -1,5 +1,8 @@
 {
   "intervalo": 6,
+  "anuncie": 1,
+  "anuncie_texto": "Sua marca neste espaço durante a apuração",
+  "anuncie_link": "",
   "topo": [
     { "desktop": "", "mobile": "", "link": "", "alt": "" }
   ],

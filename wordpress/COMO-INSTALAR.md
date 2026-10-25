@@ -53,7 +53,8 @@ Em **Configurações → Apuração 2026**, nas partes **Anúncios (carrossel)**
 - Mandou só uma imagem (só computador ou só celular)? Ela é usada nos dois.
 - Com 2 ou mais banners, aparecem bolinhas embaixo para escolher, e a troca pausa com o mouse em cima.
 - Use banners do mesmo tamanho em cada espaço, para a página não "pular" na troca.
-- Espaço sem banner não aparece no site. Para tirar um anúncio, clique em **Remover este banner** e salve.
+- **Espaço sem banner** mostra uma caixa **"Anuncie aqui"**. O texto (ex.: seu telefone) e o link (ex.: WhatsApp `https://wa.me/55…`) são definidos no painel. Para os espaços vazios sumirem, desmarque **Mostrar a caixa "Anuncie aqui"**.
+- Para tirar um anúncio, clique em **Remover este banner** e salve.
 - Para ver onde ficam os espaços vazios, use o link **Ver onde ficam os espaços**, na mesma tela.
 
 ## 5. Colocar a apuração dentro de uma página ou post (opcional)

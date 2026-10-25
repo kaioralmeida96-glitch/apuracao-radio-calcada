@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Apuração Eleições 2026
  * Description:       Apuração das Eleições 2026 com dados oficiais do TSE: 2º turno ao vivo, governadores, 1º turno e mapa. Página própria em /apuracao/ e shortcode [apuracao_2026] para usar em qualquer página ou post.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 5.0
  * Requires PHP:      7.0
  * Author:            Apuração Eleições 2026
@@ -159,6 +159,9 @@ function rc_apuracao_sanitize_ads($v) {
     $out = array();
     $s = isset($v['intervalo']) ? intval($v['intervalo']) : 6;
     $out['intervalo'] = ($s >= 2 && $s <= 60) ? $s : 6;
+    $out['anuncie'] = empty($v['anuncie']) ? 0 : 1;
+    $out['anuncie_texto'] = sanitize_text_field(isset($v['anuncie_texto']) ? $v['anuncie_texto'] : '');
+    $out['anuncie_link'] = esc_url_raw(isset($v['anuncie_link']) ? trim($v['anuncie_link']) : '', array('http', 'https', 'mailto', 'tel'));
     foreach (array_keys(rc_apuracao_ad_slots()) as $slot) {
         $out[$slot] = array();
         foreach (rc_apuracao_ad_items($v, $slot) as $it) {
@@ -275,6 +278,24 @@ function rc_apuracao_admin_page() {
                 <tr>
                     <th scope="row"><label for="rc_ad_int">Trocar banner a cada</label></th>
                     <td><input id="rc_ad_int" type="number" min="2" max="60" class="small-text" name="<?php echo esc_attr("{$an}[intervalo]"); ?>" value="<?php echo esc_attr(isset($ads['intervalo']) ? $ads['intervalo'] : 6); ?>"> segundos</td>
+                </tr>
+                <?php $sell = !isset($ads['anuncie']) || $ads['anuncie']; ?>
+                <tr>
+                    <th scope="row">Espaço sem banner</th>
+                    <td>
+                        <label><input type="checkbox" name="<?php echo esc_attr("{$an}[anuncie]"); ?>" value="1" <?php checked($sell); ?>> Mostrar a caixa <strong>“Anuncie aqui”</strong> nos espaços que ainda não têm banner</label>
+                        <p class="description">Desmarcado, o espaço sem banner some do site.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="rc_sell_txt">Texto do “Anuncie aqui”</label></th>
+                    <td><input id="rc_sell_txt" type="text" class="large-text" name="<?php echo esc_attr("{$an}[anuncie_texto]"); ?>" value="<?php echo esc_attr(isset($ads['anuncie_texto']) ? $ads['anuncie_texto'] : ''); ?>" placeholder="Sua marca neste espaço durante a apuração">
+                        <p class="description">Ex.: “Fale conosco: (86) 99999-9999”.</p></td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="rc_sell_link">Link do “Anuncie aqui”</label></th>
+                    <td><input id="rc_sell_link" type="text" class="regular-text" name="<?php echo esc_attr("{$an}[anuncie_link]"); ?>" value="<?php echo esc_attr(isset($ads['anuncie_link']) ? $ads['anuncie_link'] : ''); ?>" placeholder="https://wa.me/5586999999999">
+                        <p class="description">Opcional: WhatsApp (https://wa.me/55…), e-mail (mailto:…) ou página de contato.</p></td>
                 </tr>
             </table>
             <?php foreach (rc_apuracao_ad_slots() as $slot => $info) :

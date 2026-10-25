@@ -223,7 +223,6 @@ a.pill{text-decoration:none}a.pill:hover{color:var(--fg);border-color:var(--fg)}
 .adrow{display:flex;gap:14px;align-items:stretch;margin-top:18px}
 .ad{flex:1;min-width:0;text-align:center}
 .ad-mid,.ad-foot{margin-top:28px}
-.ad-lbl{display:block;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
 .ad a{display:block}
 .car{position:relative}
 .car-track{display:grid}
@@ -237,6 +236,9 @@ a.pill{text-decoration:none}a.pill:hover{color:var(--fg);border-color:var(--fg)}
 .ad-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:90px;max-width:970px;margin:0 auto;border:2px dashed #b9c7dc;border-radius:8px;background:repeating-linear-gradient(45deg,#f7f9fd,#f7f9fd 10px,#eef3f9 10px,#eef3f9 20px);color:var(--muted);font-size:.85rem;padding:12px}
 .ad-ph b{font-family:var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--fg)}
 .ad-mid .ad-ph{min-height:250px}
+.ad-sell{text-decoration:none;transition:border-color .2s,background .2s}
+.ad-sell b{font-size:1.2rem;color:var(--brand)}
+a.ad-sell:hover{border-color:var(--brand);background:#eaf1fb}
 .qr{flex:none;width:280px;display:flex;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;box-shadow:var(--shadow);color:var(--fg);text-decoration:none}
 .qr img,.qr .qr-ph{width:100px;height:100px;object-fit:contain;flex:none;border-radius:4px;background:#fff}
 .qr .qr-ph{border:2px dashed #b9c7dc;display:flex;align-items:center;justify-content:center;font-size:.7rem;color:var(--muted);text-align:center}
@@ -906,11 +908,19 @@ var MAP = {"ac":"M 104.7,217.7 107.4,218.8 102,223.3 101.7,224 99.2,225.3 97.4,2
       var slot = el.getAttribute("data-slot"), items = adItems(slot);
       el._car = null;
       if (!items.length){
-        el.hidden = !AD_PREVIEW;
-        el.innerHTML = AD_PREVIEW ? '<div class="ad-ph"><b>Espaço para anúncio · '+slot+'</b><span>Computador '+AD_SIZES[slot][0]+' · Celular '+AD_SIZES[slot][1]+' · vários banners giram em carrossel</span></div>' : "";
+        // espaço sem banner: caixa "Anuncie aqui" (pode ser desligada no painel) ou, no modo de exemplo, o tamanho recomendado
+        var sell = ADS.anuncie === undefined || ADS.anuncie === null || !!Number(ADS.anuncie);
+        if (AD_PREVIEW){
+          el.innerHTML = '<div class="ad-ph"><b>Espaço para anúncio · '+slot+'</b><span>Computador '+AD_SIZES[slot][0]+' · Celular '+AD_SIZES[slot][1]+' · vários banners giram em carrossel</span></div>';
+        } else if (sell){
+          var sl = safeUrl(ADS.anuncie_link);
+          var box = '<b>Anuncie aqui</b><span>'+esc(ADS.anuncie_texto || "Sua marca neste espaço durante a apuração")+'</span>';
+          el.innerHTML = sl ? '<a class="ad-ph ad-sell" href="'+esc(sl)+'" target="_blank" rel="noopener">'+box+'</a>' : '<div class="ad-ph ad-sell">'+box+'</div>';
+        } else el.innerHTML = "";
+        el.hidden = !(AD_PREVIEW || sell);
         return;
       }
-      var html = '<span class="ad-lbl">Publicidade</span><div class="car"><div class="car-track">'
+      var html = '<div class="car"><div class="car-track">'
         + items.map(function(c, i){ return '<div class="car-item'+(i ? "" : " on")+'" aria-hidden="'+(i ? "true" : "false")+'">'+adBanner(c)+'</div>'; }).join("")
         + '</div>';
       if (items.length > 1){
