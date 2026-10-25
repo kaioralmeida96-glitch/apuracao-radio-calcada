@@ -14,6 +14,7 @@ No ar em https://apuracao-eleicoes-2026-chi.vercel.app
 - `?simulado=1` usa os dados fictícios do simulado do TSE
 - `?uf=sp` abre o 2º turno já em um estado
 - `?intervalo=20` muda o tempo de atualização (mínimo 15 segundos)
+- `?tema=escuro` ou `?tema=claro` abre já no modo escolhido (o botão no topo também alterna e guarda a escolha)
 
 ## Anúncios e QR code
 

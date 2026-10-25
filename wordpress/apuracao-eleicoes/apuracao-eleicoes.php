@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Apuração Eleições 2026
  * Description:       Apuração das Eleições 2026 com dados oficiais do TSE: 2º turno ao vivo, governadores, 1º turno e mapa. Página própria em /apuracao/ e shortcode [apuracao_2026] para usar em qualquer página ou post.
- * Version:           1.2.1
+ * Version:           1.3.0
  * Requires at least: 5.0
  * Requires PHP:      7.0
  * Author:            Apuração Eleições 2026

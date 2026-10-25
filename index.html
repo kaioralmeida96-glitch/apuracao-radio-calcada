@@ -8,6 +8,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Barlow:wght@400;500;600&display=swap">
+<script>
+(function(){
+  var t = new URLSearchParams(location.search).get("tema");
+  if (t !== "escuro" && t !== "claro") { try { t = localStorage.getItem("rc-tema"); } catch(e){} }
+  if (t === "escuro") document.documentElement.setAttribute("data-theme", "dark");
+})();
+</script>
 <style>
 /* Layout: arte "Apurações Eleições" no topo, confronto presidencial em destaque, grade de governadores abaixo. Visual claro, nas cores da bandeira. */
 :root{
@@ -27,12 +34,46 @@
   --gov-b:#0277bd;
   --empty:#b4bfcd;
   --map-bg:#e4eaf2;
+  --map-stroke:#ffffff;
+  --dash:#b9c7dc;
+  --stripe-a:#f7f9fd;
+  --stripe-b:#eef3f9;
+  --hover-bg:#eaf1fb;
+  --warn-bg:#fff5f5;
   --warn:#c62828;
   --shadow:0 1px 2px rgba(11,31,77,.06),0 4px 14px rgba(11,31,77,.05);
   --font-display:"Barlow Condensed","Arial Narrow",Arial,sans-serif;
   --font-body:"Barlow",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   color-scheme:light;
 }
+/* modo escuro: fundo preto e cartões cinza-escuros, no estilo de transmissão */
+:root[data-theme="dark"]{
+  --bg:#0b0b0b;
+  --panel:#141414;
+  --panel-2:#1b1b1b;
+  --line:#2a2a2a;
+  --fg:#f3f3ef;
+  --muted:#9b9b94;
+  --brand:#5b9cff;
+  --brand-ink:#0b0b0b;
+  --cand-a:#ef5350;
+  --cand-b:#2ecc71;
+  --gov-a:#f2b134;
+  --gov-b:#4cc3e6;
+  --empty:#3b414b;
+  --map-bg:#1d2127;
+  --map-stroke:#0b0b0b;
+  --dash:#3a3f47;
+  --stripe-a:#161616;
+  --stripe-b:#1c1c1c;
+  --hover-bg:#1a2333;
+  --warn:#ff6b57;
+  --warn-bg:#2a1512;
+  --shadow:none;
+  color-scheme:dark;
+}
+.theme-btn{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:.8rem;font-weight:600;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:4px 12px;cursor:pointer}
+.theme-btn:hover{border-color:var(--brand)}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{
@@ -60,7 +101,7 @@ img{max-width:100%}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(13,71,161,.45)}70%{box-shadow:0 0 0 9px rgba(13,71,161,0)}100%{box-shadow:0 0 0 0 rgba(13,71,161,0)}}
 @media (prefers-reduced-motion:reduce){.live i{animation:none}.bar span{transition:none!important}}
 
-.sim{margin-top:14px;padding:10px 14px;border:1px dashed var(--warn);color:var(--warn);background:#fff5f5;font-size:.9rem}
+.sim{margin-top:14px;padding:10px 14px;border:1px dashed var(--warn);color:var(--warn);background:var(--warn-bg);font-size:.9rem}
 
 /* seções */
 section{padding-block:28px 8px}
@@ -135,7 +176,7 @@ select:focus-visible,a:focus-visible,button:focus-visible{outline:2px solid var(
 /* mapa */
 .mapbox{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:18px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:18px;box-shadow:var(--shadow)}
 .mapbox svg{width:100%;height:auto;display:block;max-height:640px;background:var(--map-bg);border-radius:8px;padding:10px;box-sizing:border-box}
-.mapbox path{fill:var(--empty);stroke:#fff;stroke-width:1;cursor:pointer;transition:fill .5s ease,opacity .5s ease}
+.mapbox path{fill:var(--empty);stroke:var(--map-stroke);stroke-width:1;cursor:pointer;transition:fill .5s ease,opacity .5s ease}
 .mapbox path.partial{opacity:.6}
 .mapbox path:hover,.mapbox path:focus-visible,.mapbox path.sel{stroke:var(--fg);stroke-width:2.5;outline:none}
 .mapbox text{fill:#fff;font-family:var(--font-display);font-weight:700;font-size:13px;text-anchor:middle;dominant-baseline:central;pointer-events:none;paint-order:stroke;stroke:rgba(11,31,77,.6);stroke-width:2.5px}
@@ -229,22 +270,22 @@ a.pill{text-decoration:none}a.pill:hover{color:var(--fg);border-color:var(--fg)}
 .car-item{grid-area:1/1;opacity:0;visibility:hidden;transition:opacity .6s ease,visibility .6s}
 .car-item.on{opacity:1;visibility:visible}
 .car-dots{display:flex;justify-content:center;gap:6px;margin-top:8px}
-.car-dots button{width:9px;height:9px;padding:0;border-radius:50%;border:0;background:#b9c7dc;cursor:pointer}
+.car-dots button{width:9px;height:9px;padding:0;border-radius:50%;border:0;background:var(--dash);cursor:pointer}
 .car-dots button[aria-current="true"]{background:var(--brand);width:22px;border-radius:5px}
 @media (prefers-reduced-motion:reduce){.car-item{transition:none}}
 .ad img{display:block;width:100%;height:auto;max-width:970px;margin:0 auto;border-radius:6px}
-.ad-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:90px;max-width:970px;margin:0 auto;border:2px dashed #b9c7dc;border-radius:8px;background:repeating-linear-gradient(45deg,#f7f9fd,#f7f9fd 10px,#eef3f9 10px,#eef3f9 20px);color:var(--muted);font-size:.85rem;padding:12px}
+.ad-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:90px;max-width:970px;margin:0 auto;border:2px dashed var(--dash);border-radius:8px;background:repeating-linear-gradient(45deg,var(--stripe-a),var(--stripe-a) 10px,var(--stripe-b) 10px,var(--stripe-b) 20px);color:var(--muted);font-size:.85rem;padding:12px}
 .ad-ph b{font-family:var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--fg)}
 .ad-mid .ad-ph{min-height:250px}
 .ad-sell{text-decoration:none;transition:border-color .2s,background .2s}
 .ad-sell b{font-size:1.2rem;color:var(--brand)}
-a.ad-sell:hover{border-color:var(--brand);background:#eaf1fb}
+a.ad-sell:hover{border-color:var(--brand);background:var(--hover-bg)}
 /* QR code: só o quadradinho, com a mesma altura do banner ao lado */
 .qrs{flex:none;display:flex;gap:8px;align-items:flex-start}
 .qr{width:var(--qr,90px);height:var(--qr,90px);display:block;background:#fff;border:1px solid var(--line);border-radius:6px;padding:4px;box-shadow:var(--shadow);box-sizing:border-box}
 a.qr:hover{border-color:var(--brand)}
 .qr img,.qr .qr-ph{display:block;width:100%;height:100%;object-fit:contain;border-radius:3px}
-.qr .qr-ph{border:2px dashed #b9c7dc;display:flex;align-items:center;justify-content:center;font-size:.62rem;color:var(--muted);text-align:center;box-sizing:border-box}
+.qr .qr-ph{border:2px dashed var(--dash);display:flex;align-items:center;justify-content:center;font-size:.62rem;color:var(--muted);text-align:center;box-sizing:border-box}
 
 footer{border-top:1px solid var(--line);margin-top:28px;padding-block:18px 28px;color:var(--muted);font-size:.82rem;display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px}
 footer a{color:var(--fg)}
@@ -289,7 +330,7 @@ footer a{color:var(--fg)}
       <div class="ttl"><b id="ttlMain">Apuração 2º turno</b><span id="ttlSub">Eleições 2026 · domingo, 25 de outubro</span></div>
     </div>
     <div class="status">
-      <span class="live" id="live"><i></i><span id="liveTxt">Ao vivo</span></span>
+      <span style="display:flex;gap:10px;align-items:center"><button type="button" class="theme-btn" id="themeBtn"></button><span class="live" id="live"><i></i><span id="liveTxt">Ao vivo</span></span></span>
       <span class="num" id="upd">Conectando ao TSE…</span>
       <span class="num" id="next"></span>
     </div>
@@ -401,6 +442,18 @@ footer a{color:var(--fg)}
 
   <!-- mapa da totalização, 1º ou 2º turno -->
   <div class="view" id="v-map" hidden>
+    <section aria-labelledby="hDuelMap">
+      <div class="sec-h">
+        <h2 id="hDuelMap"><strong>Presidente</strong> · <span id="duelMapScope">Brasil</span></h2>
+        <span class="pill" id="duelMapState"></span>
+      </div>
+      <div class="duel">
+        <div class="faces" id="duelMapFaces"></div>
+        <div class="bar" id="duelMapBar" aria-hidden="true"></div>
+        <div class="bar-legend">50% dos votos válidos</div>
+      </div>
+    </section>
+
     <section aria-labelledby="hMap">
       <div class="sec-h">
         <h2 id="hMap"><strong>Mapa da apuração</strong> · <span id="mapScope">Presidente</span></h2>
@@ -447,6 +500,20 @@ var MAP = {"ac":"M 104.7,217.7 107.4,218.8 102,223.3 101.7,224 99.2,225.3 97.4,2
 
   var $ = function(id){return document.getElementById(id);};
   if (SIM) $("simBanner").hidden = false;
+
+  // modo claro / escuro (fica salvo no aparelho)
+  function paintTheme(){
+    var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    $("themeBtn").textContent = dark ? "☀ Modo claro" : "☾ Modo escuro";
+    $("themeBtn").setAttribute("aria-pressed", String(dark));
+  }
+  $("themeBtn").addEventListener("click", function(){
+    var dark = document.documentElement.getAttribute("data-theme") !== "dark";
+    if (dark) document.documentElement.setAttribute("data-theme", "dark"); else document.documentElement.removeAttribute("data-theme");
+    try { localStorage.setItem("rc-tema", dark ? "escuro" : "claro"); } catch(e){}
+    paintTheme();
+  });
+  paintTheme();
 
   var pad6 = function(c){ return ("000000"+c).slice(-6); };
   var urlRes = function(cfg, ele, uf, cargo){ return cfg.base+"/"+ele+"/dados/"+uf+"/"+uf+"-c"+("0000"+cargo).slice(-4)+"-e"+pad6(ele)+"-u.json"; };
@@ -622,15 +689,13 @@ var MAP = {"ac":"M 104.7,217.7 107.4,218.8 102,223.3 101.7,224 99.2,225.3 97.4,2
     map2.select(sel.value); tick(true);
   });
 
-  function renderPres(j, uf){
-    var cs = flatten(j);
-    var k = keys(cs);
-    var html = "";
+  function duelFaces(cs, cfg, ele, elected){
+    var k = keys(cs), html = "";
     cs.slice(0,2).forEach(function(c,i){
       var side = i===0 ? "" : " r";
-      var showElected = c.e && uf === "br";
+      var showElected = c.e && elected;
       html += '<div class="cand'+side+'" data-k="'+k[i]+'">'
-        + '<div class="photo"><img alt="" loading="lazy" src="'+esc(urlFoto(CFG,CFG.pres,"br",c.sq))+'" onerror="this.remove()"></div>'
+        + '<div class="photo"><img alt="" loading="lazy" src="'+esc(urlFoto(cfg,ele,"br",c.sq))+'" onerror="this.remove()"></div>'
         + '<div class="who"><div class="nm">'+esc(c.nm)+'</div>'
         + '<div class="pt">'+esc(c.n)+' · '+esc(c.sg)+'</div>'
         + (c.vs ? '<div class="vc">Vice: '+esc(c.vs)+'</div>' : '')
@@ -640,7 +705,11 @@ var MAP = {"ac":"M 104.7,217.7 107.4,218.8 102,223.3 101.7,224 99.2,225.3 97.4,2
         + '</div></div>';
       if (i===0) html += '<div class="vs" aria-hidden="true">×</div>';
     });
-    $("faces").innerHTML = html;
+    return html;
+  }
+  function renderPres(j, uf){
+    var cs = flatten(j), k = keys(cs);
+    $("faces").innerHTML = duelFaces(cs, CFG, CFG.pres, uf === "br");
     $("presBar").innerHTML = bar(cs, k);
     $("presMeta").innerHTML = metaCells(j);
     var st = state(j);
@@ -742,7 +811,7 @@ var MAP = {"ac":"M 104.7,217.7 107.4,218.8 102,223.3 101.7,224 99.2,225.3 97.4,2
   // na aba Mapa o clique fica no mapa e mostra o resumo do estado logo abaixo dele
   var mapUf = "";
   var mapFull = new MapView($("mapFull"), function(uf){
-    mapUf = uf; mapFull.select(uf); renderStateBox();
+    mapUf = uf; mapFull.select(uf); renderStateBox(); renderDuelMap();
     load1().then(renderStateBox, renderStateBox);
   });
   var stateBox = document.createElement("div");
@@ -755,6 +824,20 @@ var MAP = {"ac":"M 104.7,217.7 107.4,218.8 102,223.3 101.7,224 99.2,225.3 97.4,2
     mapFull.update({br: c.uf.br, uf: c.uf});
     $("mapScope").textContent = "Presidente · " + (mapTurn === "t1" ? "1º turno (resultado final)" : "2º turno (ao vivo)");
     renderStateBox();
+    renderDuelMap();
+  }
+  // Lula × Flávio no turno escolhido; no Brasil ou no estado clicado
+  function renderDuelMap(){
+    var t1 = mapTurn === "t1", c = t1 ? cache1 : cache2;
+    var uf = mapUf && c.uf[mapUf] ? mapUf : "br", j = c.uf[uf];
+    $("duelMapScope").textContent = (UFNAME[uf] || "Brasil") + " · " + (t1 ? "1º turno" : "2º turno");
+    if (!j){ $("duelMapFaces").innerHTML = '<small style="color:var(--muted)">Carregando…</small>'; $("duelMapBar").innerHTML = ""; return; }
+    var cs = flatten(j);
+    // no 1º turno, o confronto mostrado é o dos dois que foram ao 2º turno
+    if (t1){ var duo = cs.filter(function(x){ return x.n === "13" || x.n === "22"; }); if (duo.length === 2) cs = duo; }
+    $("duelMapFaces").innerHTML = duelFaces(cs, t1 ? CFG1 : CFG, t1 ? CFG1.pres : CFG.pres, !t1 && uf === "br");
+    $("duelMapBar").innerHTML = bar(cs, keys(cs));
+    var st = state(j), p = $("duelMapState"); p.textContent = st.t; p.className = "pill"+(st.c?" "+st.c:"");
   }
 
   // resumo do estado: quem venceu para presidente e governador em cada turno
