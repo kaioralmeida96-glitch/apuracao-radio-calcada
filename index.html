@@ -1074,7 +1074,14 @@ var MAP = {"ac":"M 104.7,217.7 107.4,218.8 102,223.3 101.7,224 99.2,225.3 97.4,2
     adNext = Date.now() + AD_EVERY;
     renderAds();
   }
-  if (window.RC_ADS){ adsLoaded(window.RC_ADS); }
+  if (window.RC_ADS){
+    adsLoaded(window.RC_ADS);
+    // no WordPress, confirma pela API o que está salvo agora (a página pode ter vindo de um cache antigo)
+    if (window.RC_ADS_URL){
+      fetch(window.RC_ADS_URL, {cache:"no-store"}).then(function(r){ return r.ok ? r.json() : null; })
+        .then(function(j){ if (j && typeof j === "object" && JSON.stringify(j) !== JSON.stringify(ADS)) adsLoaded(j); }, function(){});
+    }
+  }
   else {
     renderAds();
     fetch("ads.json", {cache:"no-cache"}).then(function(r){ return r.ok ? r.json() : {}; })

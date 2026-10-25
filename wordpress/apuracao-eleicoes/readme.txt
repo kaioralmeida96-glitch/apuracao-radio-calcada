@@ -1,7 +1,7 @@
 === Apuração Eleições 2026 ===
 Requires at least: 5.0
 Requires PHP: 7.0
-Stable tag: 1.3.1
+Stable tag: 1.3.2
 License: GPL-2.0-or-later
 
 Apuração das Eleições 2026 com dados oficiais do TSE.

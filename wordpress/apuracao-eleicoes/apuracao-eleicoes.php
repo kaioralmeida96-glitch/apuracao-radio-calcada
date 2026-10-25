@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Apuração Eleições 2026
  * Description:       Apuração das Eleições 2026 com dados oficiais do TSE: 2º turno ao vivo, governadores, 1º turno e mapa. Página própria em /apuracao/ e shortcode [apuracao_2026] para usar em qualquer página ou post.
- * Version:           1.3.1
+ * Version:           1.3.2
  * Requires at least: 5.0
  * Requires PHP:      7.0
  * Author:            Apuração Eleições 2026
@@ -56,6 +56,19 @@ add_filter('query_vars', function ($vars) {
     return $vars;
 });
 
+// anúncios e QR codes em tempo real (a API do WordPress não passa pelo cache de página)
+add_action('rest_api_init', function () {
+    register_rest_route('apuracao-eleicoes/v1', '/anuncios', array(
+        'methods'             => 'GET',
+        'permission_callback' => '__return_true',
+        'callback'            => function () {
+            $r = new WP_REST_Response(rc_apuracao_ads());
+            $r->header('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+            return $r;
+        },
+    ));
+});
+
 // entrega a aplicação inteira, sem o tema do WordPress em volta
 // (no endereço próprio e, se marcado nas configurações, também na página inicial do site)
 add_action('template_redirect', function () {
@@ -74,13 +87,19 @@ add_action('template_redirect', function () {
         . "setInterval(send,700);})();</script>";
     $html = str_replace('</body>', $resize . "\n</body>", $html);
 
-    // anúncios e QR code configurados no painel
-    $ads = '<script>window.RC_ADS = ' . wp_json_encode(rc_apuracao_ads()) . ';</script>';
+    // anúncios e QR code configurados no painel; a página também os busca de novo pela API,
+    // para mostrar o que está salvo mesmo quando um plugin de cache guardou a página antiga
+    $ads = '<script>window.RC_ADS = ' . wp_json_encode(rc_apuracao_ads()) . ';'
+        . 'window.RC_ADS_URL = ' . wp_json_encode(wp_make_link_relative(rest_url('apuracao-eleicoes/v1/anuncios'))) . ';</script>';
     $html = str_replace('</head>', $ads . "\n</head>", $html);
 
+    // pede aos plugins de cache mais comuns (WP Rocket, W3 Total Cache, LiteSpeed, WP Super Cache) que não guardem esta página
+    if (!defined('DONOTCACHEPAGE')) define('DONOTCACHEPAGE', true);
+    do_action('litespeed_control_set_nocache', 'apuração ao vivo');
     status_header(200);
     nocache_headers();
     header('Content-Type: text/html; charset=utf-8');
+    header('X-LiteSpeed-Cache-Control: no-cache');
     echo $html;
     exit;
 });

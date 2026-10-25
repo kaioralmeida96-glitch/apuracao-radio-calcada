@@ -84,7 +84,7 @@ Dica: use um modelo de página "largura total" ou "sem barra lateral", se o tema
 
 - **`/apuracao/` dá erro 404:** vá em **Configurações → Links permanentes** e clique em **Salvar alterações**, sem mudar nada. Isso atualiza os endereços do WordPress.
 - **Usa links permanentes "Simples":** o endereço vira `seusite.com.br/?rc_apuracao=1` e funciona do mesmo jeito. O link certo aparece em Configurações → Apuração 2026.
-- **Plugin de cache (WP Rocket, LiteSpeed, W3 Total Cache etc.):** pode deixar ativo. Os números vêm direto do TSE pelo navegador de quem visita, e o cache não congela a apuração.
+- **Plugin de cache (WP Rocket, LiteSpeed, W3 Total Cache etc.) ou Cloudflare:** pode deixar ativo. Os números vêm direto do TSE, e os anúncios e QR codes são buscados na hora pela API do WordPress, então uma página guardada em cache também mostra o que está salvo no painel. Se depois de salvar algo ainda não aparecer, limpe o cache do plugin uma vez.
 - **Números zerados antes de domingo:** é normal. O TSE só publica o 2º turno depois que as urnas fecham. Para testar antes, use `simulado="1"`.
 
 ## Atualizar o plugin depois de uma mudança
