@@ -1,7 +1,7 @@
 === Apuração Eleições 2026 ===
 Requires at least: 5.0
 Requires PHP: 7.0
-Stable tag: 1.3.2
+Stable tag: 1.4.0
 License: GPL-2.0-or-later
 
 Apuração das Eleições 2026 com dados oficiais do TSE.
@@ -10,6 +10,7 @@ Apuração das Eleições 2026 com dados oficiais do TSE.
 
 * Página própria: seusite.com.br/apuracao/ (o endereço pode ser trocado em Configurações → Apuração 2026)
 * Opção para usar a apuração como página inicial do site
+* Banner principal em carrossel: a arte "Apurações Eleições" e/ou imagens enviadas no painel
 * Espaços de anúncio (topo, meio e rodapé, com banner de computador e de celular) e QR code, trocados pelo painel
 * Shortcode para qualquer página ou post: [apuracao_2026]
 * Abas: 2º turno ao vivo, Governadores, 1º turno e Mapa (com o confronto Lula × Flávio)

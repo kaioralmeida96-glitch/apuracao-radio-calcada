@@ -34,7 +34,19 @@ Para que quem abrir `seusite.com.br` caia direto na apuração, sem precisar do 
 
 Só a página inicial muda. As outras páginas, os posts, a busca e o painel continuam iguais, e `/apuracao/` também continua funcionando. Para voltar à página inicial de antes (por exemplo, depois da eleição), é só desmarcar e salvar.
 
-## 4. Anúncios (carrossel) e QR code
+## 4. Banner principal (topo da página)
+
+Por padrão, o topo mostra a arte **"Apurações Eleições"**. Em **Configurações → Apuração 2026 → Banner principal**:
+
+1. Clique em **Escolher imagem** e envie a imagem do banner: **1760 × 435** no computador e **900 × 300** no celular (opcional).
+2. Para mais imagens, clique em **+ Adicionar imagem ao banner principal**. Com 2 ou mais, o banner vira carrossel, com bolinhas, no mesmo tempo dos anúncios.
+3. **Mostrar a arte "Apurações Eleições"**: marcado, a arte entra no carrossel junto com as suas imagens. Desmarcado, só as suas imagens aparecem.
+4. **Link ao clicar** (opcional): a imagem vira clicável.
+5. **Salvar configurações**.
+
+Sem nenhuma imagem enviada, a arte padrão aparece sozinha, como antes.
+
+## 5. Anúncios (carrossel) e QR code
 
 Em **Configurações → Apuração 2026**, nas partes **Anúncios (carrossel)** e **QR codes**. Cada espaço pode ter **vários banners**, que se revezam sozinhos. O tempo de troca é ajustável em **Trocar banner a cada … segundos** (padrão: 6).
 
@@ -59,7 +71,7 @@ Em **Configurações → Apuração 2026**, nas partes **Anúncios (carrossel)**
 - **QR codes:** preencha **QR code 1** e, se quiser, **QR code 2** (imagem e link). Na página aparece só o quadradinho do QR, sem texto, com a mesma altura do banner ao lado. QR code sem imagem não aparece.
 - Para ver onde ficam os espaços vazios, use o link **Ver onde ficam os espaços**, na mesma tela.
 
-## 5. Colocar a apuração dentro de uma página ou post (opcional)
+## 6. Colocar a apuração dentro de uma página ou post (opcional)
 
 Para mostrar a apuração dentro do layout do site, com cabeçalho, menu e rodapé do tema:
 

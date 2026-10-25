@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Apuração Eleições 2026
  * Description:       Apuração das Eleições 2026 com dados oficiais do TSE: 2º turno ao vivo, governadores, 1º turno e mapa. Página própria em /apuracao/ e shortcode [apuracao_2026] para usar em qualquer página ou post.
- * Version:           1.3.2
+ * Version:           1.4.0
  * Requires at least: 5.0
  * Requires PHP:      7.0
  * Author:            Apuração Eleições 2026
@@ -181,7 +181,12 @@ function rc_apuracao_sanitize_ads($v) {
     $out['anuncie'] = empty($v['anuncie']) ? 0 : 1;
     $out['anuncie_texto'] = sanitize_text_field(isset($v['anuncie_texto']) ? $v['anuncie_texto'] : '');
     $out['anuncie_link'] = esc_url_raw(isset($v['anuncie_link']) ? trim($v['anuncie_link']) : '', array('http', 'https', 'mailto', 'tel'));
-    foreach (array_keys(rc_apuracao_ad_slots()) as $slot) {
+    // vindo do formulário, caixa desmarcada = 0; em qualquer outro caso, a arte padrão fica ligada
+    $out['banner_padrao'] = isset($v['_salvo'])
+        ? (empty($v['banner_padrao']) ? 0 : 1)
+        : ((isset($v['banner_padrao']) && !$v['banner_padrao']) ? 0 : 1);
+    // "banner" é o banner principal do topo da página; os demais são os espaços de anúncio
+    foreach (array_merge(array('banner'), array_keys(rc_apuracao_ad_slots())) as $slot) {
         $out[$slot] = array();
         foreach (rc_apuracao_ad_items($v, $slot) as $it) {
             $item = array(
@@ -299,6 +304,28 @@ function rc_apuracao_admin_page() {
             </table>
 
             <?php $ads = rc_apuracao_ads(); $an = RC_APURACAO_ADS; ?>
+            <input type="hidden" name="<?php echo esc_attr("{$an}[_salvo]"); ?>" value="1">
+
+            <h2>Banner principal (topo da página)</h2>
+            <p>Por padrão aparece a arte “Apurações Eleições”. Envie suas imagens para o banner virar um carrossel; elas trocam no mesmo tempo dos anúncios.</p>
+            <table class="form-table" role="presentation">
+                <tr>
+                    <th scope="row">Arte padrão</th>
+                    <td>
+                        <label><input type="checkbox" name="<?php echo esc_attr("{$an}[banner_padrao]"); ?>" value="1" <?php checked(!isset($ads['banner_padrao']) || $ads['banner_padrao']); ?>> Mostrar a arte “Apurações Eleições” no banner</label>
+                        <p class="description">Desmarcado, o banner mostra só as suas imagens. Sem nenhuma imagem enviada, a arte padrão aparece de qualquer jeito.</p>
+                    </td>
+                </tr>
+            </table>
+            <?php $binfo = array('Banner principal', '1760 × 435', '900 × 300');
+            $bitems = rc_apuracao_ad_items($ads, 'banner');
+            if (!$bitems) $bitems = array(array()); ?>
+            <div class="rc-list" data-slot="banner">
+                <?php foreach ($bitems as $i => $item) rc_apuracao_ad_card('banner', $i, $item, $binfo); ?>
+            </div>
+            <script type="text/template" class="rc-tpl" data-slot="banner"><?php rc_apuracao_ad_card('banner', '__i__', array(), $binfo); ?></script>
+            <p><button type="button" class="button rc-add" data-slot="banner">+ Adicionar imagem ao banner principal</button></p>
+
             <h2>Anúncios (carrossel)</h2>
             <p>Cada espaço pode ter vários banners, que se revezam sozinhos em carrossel. Cada banner tem uma imagem para computador e outra para celular; se mandar só uma, ela é usada nos dois. Espaço sem banner não aparece no site.
                <a href="<?php echo esc_url(rc_apuracao_url(array('anuncios' => 'exemplo'))); ?>" target="_blank" rel="noopener">Ver onde ficam os espaços</a></p>

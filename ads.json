@@ -3,6 +3,8 @@
   "anuncie": 1,
   "anuncie_texto": "Sua marca neste espaço durante a apuração",
   "anuncie_link": "",
+  "banner_padrao": 1,
+  "banner": [],
   "topo": [
     {
       "desktop": "",
