@@ -273,10 +273,9 @@ a.pill{text-decoration:none}a.pill:hover{color:var(--fg);border-color:var(--fg)}
 .car-dots button{width:9px;height:9px;padding:0;border-radius:50%;border:0;background:var(--dash);cursor:pointer}
 .car-dots button[aria-current="true"]{background:var(--brand);width:22px;border-radius:5px}
 @media (prefers-reduced-motion:reduce){.car-item{transition:none}}
-.ad img{display:block;width:100%;height:auto;max-width:970px;margin:0 auto;border-radius:6px}
+.ad img{display:block;width:100%;height:auto;max-width:970px;margin:0 auto;border-radius:6px;aspect-ratio:970/90;object-fit:cover}
 .ad-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:90px;max-width:970px;margin:0 auto;border:2px dashed var(--dash);border-radius:8px;background:repeating-linear-gradient(45deg,var(--stripe-a),var(--stripe-a) 10px,var(--stripe-b) 10px,var(--stripe-b) 20px);color:var(--muted);font-size:.85rem;padding:12px}
 .ad-ph b{font-family:var(--font-display);letter-spacing:.1em;text-transform:uppercase;color:var(--fg)}
-.ad-mid .ad-ph{min-height:250px}
 .ad-sell{text-decoration:none;transition:border-color .2s,background .2s}
 .ad-sell b{font-size:1.2rem;color:var(--brand)}
 a.ad-sell:hover{border-color:var(--brand);background:var(--hover-bg)}
@@ -312,6 +311,7 @@ footer a{color:var(--fg)}
   .grid{grid-template-columns:1fr}
   .meta{grid-template-columns:repeat(2,minmax(0,1fr))}
   .adrow{flex-direction:column}
+  .ad img{aspect-ratio:320/100}
   .qrs{justify-content:center}
   .qrs{--qr:96px!important}
   .ad-ph{min-height:100px}
@@ -974,7 +974,7 @@ var MAP = {"ac":"M 104.7,217.7 107.4,218.8 102,223.3 101.7,224 99.2,225.3 97.4,2
   /* ---------- anúncios (carrossel) e QR code ---------- */
   // ?anuncios=exemplo mostra os espaços vazios com o tamanho recomendado
   var AD_PREVIEW = params.get("anuncios") === "exemplo";
-  var AD_SIZES = {topo:["970×90","320×100"], meio:["970×250","300×250"], rodape:["970×90","320×100"]};
+  var AD_SIZES = {topo:["970×90","320×100"], meio:["970×90","320×100"], rodape:["970×90","320×100"]};
   var ADS = {};
   var safeUrl = function(u){ u = String(u||"").trim(); return /^(javascript|data|vbscript):/i.test(u) ? "" : u; };
   // cada espaço é uma lista de banners; aceita também o formato antigo, com um banner só
@@ -1020,11 +1020,13 @@ var MAP = {"ac":"M 104.7,217.7 107.4,218.8 102,223.3 101.7,224 99.2,225.3 97.4,2
     // até 2 QR codes; aceita também o formato antigo, com um só
     var qrs = (Array.isArray(ADS.qr) ? ADS.qr : (ADS.qr ? [ADS.qr] : []))
       .filter(function(q){ return q && safeUrl(q.imagem); }).slice(0, 2);
+    var sellOn = ADS.anuncie === undefined || ADS.anuncie === null || !!Number(ADS.anuncie);
     if (!qrs.length && AD_PREVIEW) qrs = [{}, {}];
+    else if (!qrs.length && sellOn) qrs = [{titulo: "Seu QR code aqui", link: ADS.anuncie_link}];
     $("qrBox").innerHTML = qrs.map(function(q){
       var qi = safeUrl(q.imagem), ql = safeUrl(q.link);
       var label = q.titulo || "QR code";
-      var inner = qi ? '<img src="'+esc(qi)+'" alt="'+esc(label)+'">' : '<span class="qr-ph">QR<br>code</span>';
+      var inner = qi ? '<img src="'+esc(qi)+'" alt="'+esc(label)+'">' : '<span class="qr-ph">Seu<br>QR code<br>aqui</span>';
       return ql ? '<a class="qr" href="'+esc(ql)+'" target="_blank" rel="noopener" title="'+esc(label)+'">'+inner+'</a>' : '<div class="qr" title="'+esc(label)+'">'+inner+'</div>';
     }).join("");
     $("qrBox").hidden = !qrs.length;

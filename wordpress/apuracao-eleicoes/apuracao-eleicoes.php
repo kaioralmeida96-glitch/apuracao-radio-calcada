@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Apuração Eleições 2026
  * Description:       Apuração das Eleições 2026 com dados oficiais do TSE: 2º turno ao vivo, governadores, 1º turno e mapa. Página própria em /apuracao/ e shortcode [apuracao_2026] para usar em qualquer página ou post.
- * Version:           1.3.0
+ * Version:           1.3.1
  * Requires at least: 5.0
  * Requires PHP:      7.0
  * Author:            Apuração Eleições 2026
@@ -21,7 +21,7 @@ define('RC_APURACAO_ADS', 'rc_apuracao_ads');
 function rc_apuracao_ad_slots() {
     return array(
         'topo'   => array('Topo (abaixo do menu)', '970 × 90', '320 × 100'),
-        'meio'   => array('Meio (entre as seções)', '970 × 250', '300 × 250'),
+        'meio'   => array('Meio (abaixo do Lula × Flávio)', '970 × 90', '320 × 100'),
         'rodape' => array('Rodapé', '970 × 90', '320 × 100'),
     );
 }
@@ -320,7 +320,7 @@ function rc_apuracao_admin_page() {
 
             <?php $qrs = rc_apuracao_qr_items($ads); ?>
             <h2>QR codes</h2>
-            <p>Até 2 quadradinhos ao lado do anúncio do topo, com a mesma altura do banner (no celular, logo abaixo dele). Aparece só a imagem do QR code, sem texto. QR code sem imagem não aparece.</p>
+            <p>Até 2 quadradinhos ao lado do anúncio do topo, com a mesma altura do banner (no celular, logo abaixo dele). Aparece só a imagem do QR code, sem texto. Enquanto nenhum QR code for enviado, aparece um quadradinho “Seu QR code aqui” (se a caixa “Anuncie aqui” estiver ligada).</p>
             <?php for ($k = 0; $k < 2; $k++) :
                 $q = isset($qrs[$k]) ? $qrs[$k] : array();
                 $gq = function ($f) use ($q) { return isset($q[$f]) ? $q[$f] : ''; };

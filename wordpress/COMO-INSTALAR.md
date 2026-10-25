@@ -41,7 +41,7 @@ Em **Configurações → Apuração 2026**, nas partes **Anúncios (carrossel)**
 | Espaço | Onde aparece | Banner computador | Banner celular |
 |---|---|---|---|
 | Topo | Abaixo do menu de abas | 970 × 90 | 320 × 100 |
-| Meio | Entre as seções da aba aberta | 970 × 250 | 300 × 250 |
+| Meio | Abaixo do Lula × Flávio (entre as seções da aba aberta) | 970 × 90 | 320 × 100 |
 | Rodapé | Antes do rodapé | 970 × 90 | 320 × 100 |
 | QR codes (até 2) | Ao lado do anúncio do topo (no celular, abaixo dele) | quadrado, 300 × 300 | o mesmo |
 
