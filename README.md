@@ -18,7 +18,7 @@ No ar em https://apuracao-eleicoes-2026-chi.vercel.app
 ## Anúncios e QR code
 
 - No WordPress: **Configurações → Apuração 2026** (veja `wordpress/COMO-INSTALAR.md`)
-- Na Vercel: edite `ads.json`. Cada espaço (`topo`, `meio`, `rodape`) é uma lista de banners (`desktop`, `mobile`, `link`), que giram em carrossel a cada `intervalo` segundos. O `qr` tem `imagem`, `titulo`, `texto` e `link`
+- Na Vercel: edite `ads.json`. Cada espaço (`topo`, `meio`, `rodape`) é uma lista de banners (`desktop`, `mobile`, `link`), que giram em carrossel a cada `intervalo` segundos. O `qr` é uma lista de até 2 QR codes, cada um com `imagem`, `titulo`, `texto` e `link`
 - `?anuncios=exemplo` mostra onde ficam os espaços vazios
 
 ## Rodar no computador

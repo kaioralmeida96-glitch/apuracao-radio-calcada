@@ -36,14 +36,14 @@ Só a página inicial muda. As outras páginas, os posts, a busca e o painel con
 
 ## 4. Anúncios (carrossel) e QR code
 
-Em **Configurações → Apuração 2026**, nas partes **Anúncios (carrossel)** e **QR code**. Cada espaço pode ter **vários banners**, que se revezam sozinhos. O tempo de troca é ajustável em **Trocar banner a cada … segundos** (padrão: 6).
+Em **Configurações → Apuração 2026**, nas partes **Anúncios (carrossel)** e **QR codes**. Cada espaço pode ter **vários banners**, que se revezam sozinhos. O tempo de troca é ajustável em **Trocar banner a cada … segundos** (padrão: 6).
 
 | Espaço | Onde aparece | Banner computador | Banner celular |
 |---|---|---|---|
 | Topo | Abaixo do menu de abas | 970 × 90 | 320 × 100 |
 | Meio | Entre as seções da aba aberta | 970 × 250 | 300 × 250 |
 | Rodapé | Antes do rodapé | 970 × 90 | 320 × 100 |
-| QR code | Ao lado do anúncio do topo (no celular, abaixo dele) | quadrado, 300 × 300 | o mesmo |
+| QR codes (até 2) | Ao lado do anúncio do topo (no celular, abaixo dele) | quadrado, 300 × 300 | o mesmo |
 
 1. Em cada banner, clique em **Escolher imagem** e envie ou escolha a imagem na biblioteca de mídia (uma para computador e outra para celular).
 2. Preencha o **link** para onde o anúncio leva ao clicar (opcional).
@@ -55,6 +55,8 @@ Em **Configurações → Apuração 2026**, nas partes **Anúncios (carrossel)**
 - Use banners do mesmo tamanho em cada espaço, para a página não "pular" na troca.
 - **Espaço sem banner** mostra uma caixa **"Anuncie aqui"**. O texto (ex.: seu telefone) e o link (ex.: WhatsApp `https://wa.me/55…`) são definidos no painel. Para os espaços vazios sumirem, desmarque **Mostrar a caixa "Anuncie aqui"**.
 - Para tirar um anúncio, clique em **Remover este banner** e salve.
+- **Links:** cada banner e cada QR code tem o campo **Link ao clicar**. Preenchido, o anúncio ou o QR code vira clicável e abre o link em outra aba.
+- **QR codes:** preencha **QR code 1** e, se quiser, **QR code 2** (imagem, título, texto e link). QR code sem imagem não aparece.
 - Para ver onde ficam os espaços vazios, use o link **Ver onde ficam os espaços**, na mesma tela.
 
 ## 5. Colocar a apuração dentro de uma página ou post (opcional)
